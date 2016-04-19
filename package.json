@@ -1,0 +1,27 @@
+{
+  "name": "awesome-link-checker",
+  "version": "0.0.1",
+  "description": "Removes links that are 404s in awesome lists",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ColinEberhardt/awesome-link-checker.git"
+  },
+  "author": "ColinEberhardt",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ColinEberhardt/awesome-link-checker/issues"
+  },
+  "homepage": "https://github.com/ColinEberhardt/awesome-link-checker#readme",
+  "dependencies": {
+    "commander": "^2.9.0",
+    "progress": "^1.1.8",
+    "q": "^1.4.1",
+    "request-promise": "^2.0.1",
+    "string-replace-async": "^1.2.0",
+    "throat": "^2.0.2"
+  }
+}
