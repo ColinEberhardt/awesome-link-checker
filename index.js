@@ -29,9 +29,14 @@ module.exports = (markdown, progress) => {
           return match;
         })
         .catch(err => {
-          report.errors.push({status: err.statusCode, url: url});
           progress();
-          return '';
+          if (err.statusCode == 404 || (err.cause && err.cause.code === 'ENOTFOUND')) {
+            report.errors.push({status: '404', url: url + ' [REMOVED]'});
+            return '';
+          } else {
+            report.errors.push({status: err.statusCode, url: url + ' [Not removed from list]'});
+            return match;
+          }
         });
       }
 
