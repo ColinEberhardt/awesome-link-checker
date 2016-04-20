@@ -30,5 +30,8 @@ Q.nfcall(fs.readFile, program.infile, 'utf8')
         }
       });
   })
-  .then(transformedMarkdown => Q.nfcall(fs.writeFile, program.outfile, transformedMarkdown))
+  .then(transformed => {
+    console.log(transformed.report);
+    Q.nfcall(fs.writeFile, program.outfile, transformed.content);
+  })
   .catch(err => console.error(err));
