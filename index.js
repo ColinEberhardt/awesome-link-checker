@@ -3,23 +3,16 @@ const rp = require('request-promise');
 const stringReplaceAsync = require('string-replace-async');
 const throat = require('throat');
 
-const regex = /.*[-*+]{1} \[.*\]\((http.*)\).*[\r\n]/g
-
-const sideEffect = side => d => {
-  side()
-  return d;
-};
+const regex = /.*[-*+]{1} \[.*\]\((http.*?)\).*[\r\n]/g
 
 const createReport = (report) => {
   return 'Awesome link checker verified ' + report.linksChecked + ' links, finding ' + report.errors.length + ' broken\r\n' +
-     report.errors.map(link => ' - [' + link.status + '] ' + link.url + '\r\n');
+     report.errors.map(link => ' - [' + link.status + '] ' + link.url + '\r\n').join('');
 }
 
 module.exports = (markdown, progress) => {
 
-  const checkLinkStatus = throat(4, (url) =>
-    rp({ uri: url })
-  );
+  const checkLinkStatus = throat(2, (url) => rp({ uri: url }) );
 
   var report = {
     linksChecked: 0,
@@ -31,8 +24,10 @@ module.exports = (markdown, progress) => {
   const replacer = (match, url) => {
       report.linksChecked ++;
       return checkLinkStatus(url)
-        .then(sideEffect(progress))
-        .then(d => match)
+        .then(d => {
+          progress();
+          return match;
+        })
         .catch(err => {
           report.errors.push({status: err.statusCode, url: url});
           progress();
@@ -41,5 +36,5 @@ module.exports = (markdown, progress) => {
       }
 
   return stringReplaceAsync(markdown, regex, replacer)
-    .then(updatedContent => { return {content: updatedContent, report: createReport(report)}; })
+    .then(result => { return {content: result, report: createReport(report)}; })
 }
